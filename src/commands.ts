@@ -193,19 +193,19 @@ export async function executeStartupCommands() {
                 }
 
                 await vscode.commands.executeCommand
-                                     .apply(null, [ <any>CMD_ID ].concat(args));
+                    .apply(null, [<any>CMD_ID].concat(args));
             }
             catch (e) {
                 await WORKSPACE.showErrorMessage(
                     WORKSPACE.t('commands.executionError',
-                                CMD_ID, e)
+                        CMD_ID, e)
                 );
             }
         }
     }
     catch (e) {
         WORKSPACE.logger
-                 .trace(e, 'commands.executeStartupCommands()');
+            .trace(e, 'commands.executeStartupCommands()');
     }
 }
 
@@ -226,9 +226,9 @@ export async function reloadCommands(newCfg: deploy_contracts.Configuration) {
     const CREATE_ACTION = (id: string, sc: ScriptCommand, btn: vscode.Disposable) => {
         let cmdState: any;
 
-        return async function() {
+        return async function () {
             const CACHE = deploy_helpers.toBooleanSafe(sc.cache);
-            
+
             let script = deploy_helpers.toStringSafe(sc.script);
             if (deploy_helpers.isEmptyString(script)) {
                 script = `./${id.trim()}.js`;
@@ -289,27 +289,27 @@ export async function reloadCommands(newCfg: deploy_contracts.Configuration) {
 
                     return await Promise.resolve(
                         EXECUTE.apply(SCRIPT_MODULE,
-                                      ARGS.concat( deploy_helpers.toArray(arguments) ))
+                            ARGS.concat(deploy_helpers.toArray(arguments)))
                     );
                 }
                 else {
                     deploy_log.CONSOLE
-                              .warn(`'${SCRIPT_PATH}' contains NO 'execute()' function!`,
-                                    'commands.reloadCommands()');
+                        .warn(`'${SCRIPT_PATH}' contains NO 'execute()' function!`,
+                            'commands.reloadCommands()');
                 }
             }
             else {
                 deploy_log.CONSOLE
-                          .warn(`'${SCRIPT_PATH}' contains NO module!`,
-                                'commands.reloadCommands()');
+                    .warn(`'${SCRIPT_PATH}' contains NO module!`,
+                        'commands.reloadCommands()');
             }
         };
     };
 
     const REGISTER_NEW_COMMAND = (id: string) => {
         ME.context.commands[id] = [];
-        
-        return vscode.commands.registerCommand(id, async function() {
+
+        return vscode.commands.registerCommand(id, async function () {
             try {
                 let lastResult: any;
 
@@ -317,7 +317,7 @@ export async function reloadCommands(newCfg: deploy_contracts.Configuration) {
                     try {
                         lastResult = await Promise.resolve(
                             CMD.action
-                               .apply(CMD.thisArgs, arguments)                                           
+                                .apply(CMD.thisArgs, arguments)
                         );
                     }
                     catch (e) {
@@ -331,7 +331,7 @@ export async function reloadCommands(newCfg: deploy_contracts.Configuration) {
             }
             catch (e) {
                 deploy_log.CONSOLE
-                          .trace(e, `commands.reloadCommands().REGISTER_NEW_COMMAND(${id}).1`);
+                    .trace(e, `commands.reloadCommands().REGISTER_NEW_COMMAND(${id}).1`);
             }
         });
     };
@@ -341,6 +341,17 @@ export async function reloadCommands(newCfg: deploy_contracts.Configuration) {
         let newCommandBtn: vscode.Disposable;
         try {
             const CMD = newCfg.commands[ID];
+
+            if (ME.context.commands[ID]) {
+                ME.context.commands[ID] = ME.context.commands[ID].filter(existingCmd => {
+                    if (existingCmd.workspace.id === ME.id) {
+                        deploy_helpers.tryDispose(existingCmd.button);
+                        return false;
+                    }
+
+                    return true;
+                });
+            }
 
             let scriptCmd: ScriptCommand;
             if (deploy_helpers.isObject<ScriptCommand>(CMD)) {
@@ -366,13 +377,13 @@ export async function reloadCommands(newCfg: deploy_contracts.Configuration) {
 
                         const VALUES: deploy_values.Value[] = [
                             new deploy_values.StaticValue({
-                                    value: BTN_CMD
-                                },
+                                value: BTN_CMD
+                            },
                                 'command'
                             ),
                             new deploy_values.StaticValue({
-                                    value: opts
-                                },
+                                value: opts
+                            },
                                 'options'
                             ),
                         ];
@@ -414,7 +425,7 @@ export async function reloadCommands(newCfg: deploy_contracts.Configuration) {
 
             if (newCommand) {
                 ME.context.extension
-                          .subscriptions.push(newCommand);
+                    .subscriptions.push(newCommand);
             }
         }
         catch (e) {
@@ -451,16 +462,16 @@ export async function handleFilesAndFolders(
         if (ACTIVE_EDITOR) {
             const DOC = ACTIVE_EDITOR.document;
             if (DOC) {
-                filesAndFolders = [ DOC.fileName ];
+                filesAndFolders = [DOC.fileName];
             }
         }
     }
     else {
         filesAndFolders = allItems.map(u => u.fsPath);
     }
-    filesAndFolders = Enumerable.from( deploy_helpers.asArray(filesAndFolders) )
-                                .where(ff => !deploy_helpers.isEmptyString(ff))
-                                .toArray();
+    filesAndFolders = Enumerable.from(deploy_helpers.asArray(filesAndFolders))
+        .where(ff => !deploy_helpers.isEmptyString(ff))
+        .toArray();
 
     if (filesAndFolders.length < 1) {
         deploy_helpers.showWarningMessage(
@@ -485,13 +496,13 @@ export async function handleFilesAndFolders(
     try {
         let uriType: 'file' | 'folder' | 'items' = 'items';
         if (1 === filesAndFolders.length) {
-            const STATS = await deploy_helpers.lstat( filesAndFolders[0] );
+            const STATS = await deploy_helpers.lstat(filesAndFolders[0]);
 
             uriType = STATS.isDirectory() ? 'folder' : 'file';
         }
 
         const INVOKE_TARGET_ACTION = async (action: (target: deploy_targets.Target, files: string[]) => any,
-                                            promptId: string) => {
+            promptId: string) => {
             const SELECTED_TARGET = await deploy_targets.showTargetQuickPick(
                 context,
                 ACTIVE_TARGETS,
@@ -518,7 +529,7 @@ export async function handleFilesAndFolders(
                         dot: true,
                         nosort: true,
                         nounique: false,
-                        root: FF,                        
+                        root: FF,
                     })).pushTo(filesToHandle);
                 }
             }
@@ -527,7 +538,7 @@ export async function handleFilesAndFolders(
                 return Path.resolve(f);
             }).distinct().where(f => {
                 return WORKSPACE.isPathOf(f) &&
-                       !WORKSPACE.isFileIgnored(f);
+                    !WORKSPACE.isFileIgnored(f);
             }).orderBy(f => {
                 return Path.dirname(f).length;
             }).thenBy(f => {
@@ -537,7 +548,7 @@ export async function handleFilesAndFolders(
             }).thenBy(f => {
                 return deploy_helpers.normalizeString(Path.basename(f));
             }).toArray();
-            
+
             if (filesToHandle.length > 0) {
                 await Promise.resolve(
                     action(SELECTED_TARGET, filesToHandle)
@@ -576,8 +587,8 @@ export async function handleFilesAndFolders(
                             deploy_deploy.deployFilesTo,
                             target.__workspace
                         )(files,
-                          target,
-                          () => files);
+                            target,
+                            () => files);
                     }, 'deploy.selectTarget');
                 },
                 label: '$(rocket)  ' + i18.t(`deploy.currentFileOrFolder.${uriType}.label`),
@@ -590,8 +601,8 @@ export async function handleFilesAndFolders(
                             deploy_pull.pullFilesFrom,
                             target.__workspace
                         )(files,
-                          target,
-                          () => files);
+                            target,
+                            () => files);
                     }, 'pull.selectSource');
                 },
                 label: '$(cloud-download)  ' + i18.t(`pull.currentFileOrFolder.${uriType}.label`),
@@ -622,7 +633,7 @@ export async function handleFilesAndFolders(
                         {
                             const PRESSED_BTN: deploy_contracts.MessageItemWithValue = await vscode.window.showWarningMessage.apply(
                                 null,
-                                [ <any>WS.t('DELETE.askIfDeleteLocalFiles'), {} ].concat(BUTTONS),
+                                [<any>WS.t('DELETE.askIfDeleteLocalFiles'), {}].concat(BUTTONS),
                             );
 
                             if (!PRESSED_BTN || 0 == PRESSED_BTN.value) {
@@ -636,9 +647,9 @@ export async function handleFilesAndFolders(
                             deploy_delete.deleteFilesIn,
                             WS
                         )(files,
-                          target,
-                          () => files,
-                          deleteLocalFiles);
+                            target,
+                            () => files,
+                            deleteLocalFiles);
                     }, 'DELETE.selectTarget');
                 },
                 label: '$(trashcan)  ' + i18.t(`DELETE.currentFileOrFolder.${uriType}.label`),
@@ -650,13 +661,13 @@ export async function handleFilesAndFolders(
             const LOCAL_ITEM = filesAndFolders[0];
 
             if ('folder' === uriType) {
-                const TARGETS_CAN_LIST = deploy_helpers.from( ACTIVE_TARGETS ).where(t => {
+                const TARGETS_CAN_LIST = deploy_helpers.from(ACTIVE_TARGETS).where(t => {
                     return t.__workspace
-                            .getListPlugins(t).length > 0;
+                        .getListPlugins(t).length > 0;
                 }).toArray();
-                const TARGETS_CAN_REMOVE_FOLDER = deploy_helpers.from( ACTIVE_TARGETS ).where(t => {
+                const TARGETS_CAN_REMOVE_FOLDER = deploy_helpers.from(ACTIVE_TARGETS).where(t => {
                     return t.__workspace
-                            .getRemoveFolderPlugins(t).length > 0;
+                        .getRemoveFolderPlugins(t).length > 0;
                 }).toArray();
 
                 if (TARGETS_CAN_LIST.length > 0 || TARGETS_CAN_REMOVE_FOLDER.length > 0) {
@@ -683,8 +694,8 @@ export async function handleFilesAndFolders(
                                         await deploy_helpers.applyFuncFor(
                                             deploy_list.listDirectory, WORKSPACE
                                         )(SELECTED_TARGET,
-                                          deploy_helpers.normalizePath(RELATIVE_PATH));
-                                    }                            
+                                            deploy_helpers.normalizePath(RELATIVE_PATH));
+                                    }
                                 }
                             },
                             label: '$(list-ordered)  ' + i18.t(`listDirectory.currentFileOrFolder.label`),
@@ -716,7 +727,7 @@ export async function handleFilesAndFolders(
                                 const WORKSPACE = SELECTED_TARGET.__workspace;
 
                                 const NAME_AND_PATH = deploy_targets.getNameAndPathForFileDeployment(SELECTED_TARGET, LOCAL_ITEM,
-                                                                                                     MAPPING_SCOPE_DIRS);
+                                    MAPPING_SCOPE_DIRS);
                                 if (false === NAME_AND_PATH) {
                                     return;
                                 }
@@ -728,30 +739,30 @@ export async function handleFilesAndFolders(
                                 }
 
                                 const MAPPED_PATH = '/' + deploy_helpers.normalizePath(
-                                    deploy_helpers.normalizePath(NAME_AND_PATH.path) + 
-                                    '/' + 
+                                    deploy_helpers.normalizePath(NAME_AND_PATH.path) +
+                                    '/' +
                                     deploy_helpers.normalizePath(NAME_AND_PATH.name)
                                 );
 
                                 const SELECTED_ITEM = await vscode.window.showWarningMessage<deploy_contracts.MessageItemWithValue>(
                                     WORKSPACE.t('listDirectory.currentFileOrFolder.removeFolder.askBeforeRemove',
-                                    MAPPED_PATH
-                                ),
+                                        MAPPED_PATH
+                                    ),
                                     {
                                         isCloseAffordance: true,
                                         title: WORKSPACE.t('no'),
                                         value: 0,
                                     },
-                                    {                                
+                                    {
                                         title: WORKSPACE.t('yes'),
                                         value: 1,
                                     },
-                                    {                                
+                                    {
                                         title: WORKSPACE.t('listDirectory.currentFileOrFolder.removeFolder.yesWithLocalFolder'),
                                         value: 2,
                                     }
                                 );
-    
+
                                 if (!SELECTED_ITEM || 0 === SELECTED_ITEM.value) {
                                     return;
                                 }
@@ -789,11 +800,11 @@ export async function handleFilesAndFolders(
                                             destination = `${deploy_helpers.toStringSafe(destination)} (${TARGET_NAME})`;
 
                                             const PROGRESS_MSG = `💣 ` +
-                                                                 WORKSPACE.t('listDirectory.currentFileOrFolder.removeFolder.removing',
-                                                                             MAPPED_PATH);
+                                                WORKSPACE.t('listDirectory.currentFileOrFolder.removeFolder.removing',
+                                                    MAPPED_PATH);
 
                                             WORKSPACE.output.append(
-                                                `[${NOW.format( WORKSPACE.t('time.timeWithSeconds') )}] ` + 
+                                                `[${NOW.format(WORKSPACE.t('time.timeWithSeconds'))}] ` +
                                                 PROGRESS_MSG + ' '
                                             );
 
@@ -806,7 +817,7 @@ export async function handleFilesAndFolders(
                                         };
                                         FOLDER_TO_REMOVE.onRemoveCompleted = async (err?, deleteLocal?) => {
                                             if (err) {
-                                                WORKSPACE.output.append(`🔥: '${ deploy_helpers.toStringSafe(err) }'`);
+                                                WORKSPACE.output.append(`🔥: '${deploy_helpers.toStringSafe(err)}'`);
                                             }
                                             else {
                                                 let showOK = true;
@@ -814,7 +825,7 @@ export async function handleFilesAndFolders(
                                                 if (WITH_LOCAL_FOLDER) {
                                                     if (deploy_helpers.toBooleanSafe(deleteLocal, true)) {
                                                         try {
-                                                            await FSExtra.remove( LOCAL_ITEM );
+                                                            await FSExtra.remove(LOCAL_ITEM);
                                                         }
                                                         catch (e) {
                                                             showOK = false;
@@ -833,7 +844,7 @@ export async function handleFilesAndFolders(
                                         };
 
                                         const CTX: deploy_plugins.RemoveFoldersContext = {
-                                            cancellationToken: null,                                            
+                                            cancellationToken: null,
                                             isCancelling: null,
                                             folders: [
                                                 FOLDER_TO_REMOVE
@@ -842,12 +853,12 @@ export async function handleFilesAndFolders(
                                         };
 
                                         await PI.removeFolders(CTX);
-                                    }                                    
+                                    }
                                 }, {
                                     cancellable: true,
                                     location: vscode.ProgressLocation.Notification,
                                     title: `💣 ` + WORKSPACE.t('listDirectory.currentFileOrFolder.removeFolder.removing',
-                                                               MAPPED_PATH),
+                                        MAPPED_PATH),
                                 });
                             },
                             label: '$(trashcan)  ' + i18.t(`listDirectory.currentFileOrFolder.removeFolder.label`),
@@ -862,6 +873,6 @@ export async function handleFilesAndFolders(
     }
     catch (e) {
         deploy_log.CONSOLE
-                  .trace(e, 'extension.deploy.reloaded.currentFileOrFolder');
+            .trace(e, 'extension.deploy.reloaded.currentFileOrFolder');
     }
 }

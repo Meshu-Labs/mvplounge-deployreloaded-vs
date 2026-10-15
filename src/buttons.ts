@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as deploy_contracts from './contracts'; 
+import * as deploy_contracts from './contracts';
 import * as deploy_helpers from './helpers';
 import * as deploy_log from './log';
 import * as deploy_workspaces from './workspaces';
@@ -25,7 +25,7 @@ import * as vscode from 'vscode';
 /**
  * Describes a button, which can (de-)activate an auto deploy operation.
  */
-export interface AutoDeployButton extends deploy_contracts.Button {    
+export interface AutoDeployButton extends deploy_contracts.Button {
 }
 
 /**
@@ -41,7 +41,7 @@ export interface Button extends deploy_contracts.ButtonWithCustomCommand {
 /**
  * Describes a button that should be shown to actiovate or deactivate "deploy on change" feature.
  */
-export interface DeployOnChangeButton extends AutoDeployButton {    
+export interface DeployOnChangeButton extends AutoDeployButton {
 }
 
 /**
@@ -52,7 +52,7 @@ export type DeployOnChangeButtonValue = boolean | DeployOnChangeButton;
 /**
  * Describes a button that should be shown to actiovate or deactivate "deploy on save" feature.
  */
-export interface DeployOnSaveButton extends AutoDeployButton {    
+export interface DeployOnSaveButton extends AutoDeployButton {
 }
 
 /**
@@ -66,14 +66,14 @@ interface FinishedButton extends vscode.Disposable {
 }
 
 interface GlobalButton extends vscode.Disposable {
-    readonly button: vscode.StatusBarItem;    
+    readonly button: vscode.StatusBarItem;
     readonly command: vscode.Disposable;
 }
 
 /**
  * Describes a button that should be shown to actiovate or deactivate "remove on change" feature.
  */
-export interface RemoveOnChangeButton extends AutoDeployButton {    
+export interface RemoveOnChangeButton extends AutoDeployButton {
 }
 
 /**
@@ -117,16 +117,16 @@ function createFinishedButton(state: deploy_contracts.KeyValuePairs, key: string
     return {
         button: btn,
         command: cmd,
-        dispose: function() {
+        dispose: function () {
             const BUTTONS = state['buttons'];
 
             let timeouts: deploy_contracts.KeyValuePairs;
             if (state['timeouts']) {
-                timeouts = state['timeouts'][ KEY_FINISHED_BTNS ];
+                timeouts = state['timeouts'][KEY_FINISHED_BTNS];
             }
 
-            deploy_helpers.tryDispose( this.button );
-            deploy_helpers.tryDispose( this.command );
+            deploy_helpers.tryDispose(this.button);
+            deploy_helpers.tryDispose(this.command);
 
             if (BUTTONS) {
                 delete BUTTONS[key];
@@ -153,7 +153,7 @@ export function disposeButtons() {
         return;
     }
 
-    const GLOBAL_BUTTONS: GlobalButton[] = deploy_helpers.asArray( BUTTONS['global'] );
+    const GLOBAL_BUTTONS: GlobalButton[] = deploy_helpers.asArray(BUTTONS['global']);
     for (const GB of GLOBAL_BUTTONS) {
         deploy_helpers.tryDispose(GB);
     }
@@ -175,7 +175,7 @@ export function disposeFinishedButtons() {
     const BUTTONS = STATE['buttons'];
     if (!BUTTONS) {
         return;
-    }        
+    }
 
     const KEYS = [
         KEY_FINISHED_BTN_DEPLOY,
@@ -184,7 +184,7 @@ export function disposeFinishedButtons() {
     ];
 
     for (const K of KEYS) {
-        deploy_helpers.tryDispose(BUTTONS[ K ]);
+        deploy_helpers.tryDispose(BUTTONS[K]);
     }
 }
 
@@ -206,15 +206,15 @@ export function getFinishedButton(operation: deploy_contracts.DeployOperation): 
 
             switch (operation) {
                 case deploy_contracts.DeployOperation.Deploy:
-                    btn = BUTTONS[ KEY_FINISHED_BTN_DEPLOY ];
+                    btn = BUTTONS[KEY_FINISHED_BTN_DEPLOY];
                     break;
 
                 case deploy_contracts.DeployOperation.Pull:
-                    btn = BUTTONS[ KEY_FINISHED_BTN_PULL ];
+                    btn = BUTTONS[KEY_FINISHED_BTN_PULL];
                     break;
 
                 case deploy_contracts.DeployOperation.Delete:
-                    btn = BUTTONS[ KEY_FINISHED_BTN_DELETE ];
+                    btn = BUTTONS[KEY_FINISHED_BTN_DELETE];
                     break;
             }
 
@@ -240,7 +240,7 @@ export function initFinishedButtons(state: deploy_contracts.KeyValuePairs) {
         disposeFinishedButtons, WORKSPACE
     )();
 
-    state['timeouts'][ KEY_FINISHED_BTNS ] = {};
+    state['timeouts'][KEY_FINISHED_BTNS] = {};
 
     // deploy
     state['buttons'][KEY_FINISHED_BTN_DEPLOY] = deploy_helpers.applyFuncFor(
@@ -274,6 +274,10 @@ export async function reloadButtons() {
         return;
     }
 
+    deploy_helpers.applyFuncFor(
+        disposeButtons, WORKSPACE
+    )();
+
     let buttons = STATE['buttons'];
     if (!buttons) {
         STATE['buttons'] = buttons = {};
@@ -305,20 +309,20 @@ export async function reloadButtons() {
                 }
 
                 const GET_ARGUMENTS = async () => {
-                    return deploy_helpers.asArray( btnDesc.arguments, false );
+                    return deploy_helpers.asArray(btnDesc.arguments, false);
                 };
 
                 const BTN_CMD_ID = `extension.deploy.reloaded.buttons.globalButtons${ID}`;
-                cmd = vscode.commands.registerCommand(BTN_CMD_ID, async function() {
+                cmd = vscode.commands.registerCommand(BTN_CMD_ID, async function () {
                     try {
                         return await Promise.resolve(
                             vscode.commands.executeCommand
-                                           .apply(null, [ <any>REAL_CMD ].concat( await GET_ARGUMENTS() )),
+                                .apply(null, [<any>REAL_CMD].concat(await GET_ARGUMENTS())),
                         );
                     }
                     catch (e) {
                         deploy_log.CONSOLE
-                                  .trace(e, `${BTN_CMD_ID}(${i}.'${REAL_CMD}')`);
+                            .trace(e, `${BTN_CMD_ID}(${i}.'${REAL_CMD}')`);
 
                         WORKSPACE.showErrorMessage(
                             WORKSPACE.t('error', e)
@@ -332,20 +336,20 @@ export async function reloadButtons() {
             NEW_BUTTONS.push({
                 button: btn,
                 command: cmd,
-                dispose: function() {
-                    deploy_helpers.tryDispose( this.button );
-                    deploy_helpers.tryDispose( this.command );
+                dispose: function () {
+                    deploy_helpers.tryDispose(this.button);
+                    deploy_helpers.tryDispose(this.command);
                 }
             });
 
             btn.show();
         }
         catch (e) {
-            deploy_helpers.tryDispose( btn );
-            deploy_helpers.tryDispose( cmd );
+            deploy_helpers.tryDispose(btn);
+            deploy_helpers.tryDispose(cmd);
 
             deploy_log.CONSOLE
-                      .trace(e, 'buttons.reloadButtons(1)');
+                .trace(e, 'buttons.reloadButtons(1)');
         }
     });
 
@@ -372,7 +376,7 @@ export function setTimeoutForFinishedButton(
     if (STATE) {
         let timeouts: deploy_contracts.KeyValuePairs;
         if (STATE['timeouts']) {
-            timeouts = STATE['timeouts'][ KEY_FINISHED_BTNS ];
+            timeouts = STATE['timeouts'][KEY_FINISHED_BTNS];
         }
 
         if (timeouts) {
@@ -403,16 +407,16 @@ export function setTimeoutForFinishedButton(
                     timeouts[key] = deploy_helpers.createTimeout(() => {
                         try {
                             if (callback) {
-                                Promise.resolve( callback(BTN) ).then(() => {                                    
+                                Promise.resolve(callback(BTN)).then(() => {
                                 }, (err) => {
                                     WORKSPACE.logger
-                                             .trace(err, 'buttons.setTimeoutForFinishedButton(2)');
+                                        .trace(err, 'buttons.setTimeoutForFinishedButton(2)');
                                 });
                             }
                         }
                         catch (e) {
                             WORKSPACE.logger
-                                     .trace(e, 'buttons.setTimeoutForFinishedButton(1)');
+                                .trace(e, 'buttons.setTimeoutForFinishedButton(1)');
                         }
                     }, ms);
 

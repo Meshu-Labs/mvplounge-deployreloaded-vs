@@ -19,10 +19,7 @@
         {
             "type": "npm",
             "script": "tslint",
-            "problemMatcher": {
-                "base": "$tslint5",
-                "fileLocation": "relative"
-            }
+            "problemMatcher": []
         }
     ]
 }

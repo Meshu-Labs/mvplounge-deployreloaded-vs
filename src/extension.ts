@@ -84,7 +84,7 @@ async function createNewWorkspace(folder: vscode.WorkspaceFolder): Promise<deplo
         // CTX.plugins
         Object.defineProperty(CTX, 'plugins', {
             enumerable: true,
-            
+
             get: () => {
                 return PLUGINS;
             }
@@ -93,7 +93,7 @@ async function createNewWorkspace(folder: vscode.WorkspaceFolder): Promise<deplo
         // CTX.workspaces
         Object.defineProperty(CTX, 'workspaces', {
             enumerable: true,
-            
+
             get: () => {
                 return deploy_workspaces.getAllWorkspaces().filter(ws => {
                     return ws !== newWorkspace;
@@ -106,7 +106,7 @@ async function createNewWorkspace(folder: vscode.WorkspaceFolder): Promise<deplo
         );
 
         outputChannel.append(i18.t('workspaces.initializing',
-                                   folder.uri.fsPath) + ' ');
+            folder.uri.fsPath) + ' ');
         try {
             const HAS_BEEN_INITIALIZED = await newWorkspace.initialize();
             if (HAS_BEEN_INITIALIZED) {
@@ -115,7 +115,7 @@ async function createNewWorkspace(folder: vscode.WorkspaceFolder): Promise<deplo
             else {
                 throw new Error(
                     i18.t('workspaces.errors.notInitialized',
-                          folder.uri.fsPath)
+                        folder.uri.fsPath)
                 );
             }
         }
@@ -128,7 +128,7 @@ async function createNewWorkspace(folder: vscode.WorkspaceFolder): Promise<deplo
     }
     catch (e) {
         deploy_log.CONSOLE
-                  .err(e, 'extension.reloadWorkspaceFolders(1)');
+            .err(e, 'extension.reloadWorkspaceFolders(1)');
 
         deploy_helpers.tryDispose(fileWatcher);
         deploy_helpers.tryDispose(newWorkspace);
@@ -149,7 +149,7 @@ function getActiveWorkspacesOrAll() {
 }
 
 function getAllWorkspacesSorted() {
-    return Enumerable.from( deploy_workspaces.getAllWorkspaces() ).orderBy(ws => {
+    return Enumerable.from(deploy_workspaces.getAllWorkspaces()).orderBy(ws => {
         return ws.isActive ? 0 : 1;
     }).thenBy(ws => {
         return deploy_helpers.normalizeString(ws.name);
@@ -159,8 +159,8 @@ function getAllWorkspacesSorted() {
 }
 
 function getAllTargetsSorted() {
-    return Enumerable.from( getAllWorkspacesSorted() ).selectMany(ws => {
-        return Enumerable.from( ws.getTargets() ).orderBy(t => {
+    return Enumerable.from(getAllWorkspacesSorted()).selectMany(ws => {
+        return Enumerable.from(ws.getTargets()).orderBy(t => {
             return deploy_helpers.normalizeString(
                 deploy_targets.getTargetName(t)
             );
@@ -177,7 +177,7 @@ function normalizeActiveWorkspaces(aws: deploy_workspaces.Workspace | deploy_wor
         if (1 === deploy_workspaces.getAllWorkspaces().length) {
             aws = deploy_helpers.asArray(
                 Enumerable.from(deploy_workspaces.getAllWorkspaces())
-                          .firstOrDefault(x => true, undefined)
+                    .firstOrDefault(x => true, undefined)
             );
         }
     }
@@ -217,13 +217,13 @@ async function onDidChangeActiveTextEditor(editor: vscode.TextEditor) {
             }
             catch (e) {
                 deploy_log.CONSOLE
-                          .trace(e, 'extension.onDidChangeActiveTextEditor(2)');
+                    .trace(e, 'extension.onDidChangeActiveTextEditor(2)');
             }
         });
     }
     catch (e) {
         deploy_log.CONSOLE
-                  .trace(e, 'extension.onDidChangeActiveTextEditor(1)');
+            .trace(e, 'extension.onDidChangeActiveTextEditor(1)');
     }
     finally {
         activeWorkspaces = normalizeActiveWorkspaces(NEW_ACTIVE_WORKSPACES);
@@ -245,7 +245,7 @@ async function onDidSaveTextDocument(e: vscode.TextDocument) {
         }
         catch (e) {
             deploy_log.CONSOLE
-                      .trace(e, 'extension.onDidSaveTextDocument()');
+                .trace(e, 'extension.onDidSaveTextDocument()');
         }
     }
 }
@@ -263,7 +263,7 @@ async function refreshActiveWorkspaceList() {
     }
     catch (e) {
         deploy_log.CONSOLE
-                  .log(e, 'extension.refreshActiveWorkspaces()');
+            .log(e, 'extension.refreshActiveWorkspaces()');
     }
 
     await updateActiveWorkspaces();
@@ -305,7 +305,7 @@ async function reloadPlugins() {
 
                                 const NEW_PLUGINS: deploy_plugins.Plugin[] = deploy_helpers.asArray(await Promise.resolve(
                                     CREATE_PLUGINS.apply(MODULE,
-                                                         [ CONTEXT ])
+                                        [CONTEXT])
                                 ));
                                 if (NEW_PLUGINS) {
                                     let index = -1;
@@ -322,7 +322,7 @@ async function reloadPlugins() {
                                             PI.__filePath = Path.resolve(JS);
                                             PI.__type = deploy_helpers.toStringSafe(
                                                 Path.basename(JS,
-                                                              Path.extname(JS))
+                                                    Path.extname(JS))
                                             ).toLowerCase().trim();
 
                                             let isInitialized: boolean;
@@ -341,18 +341,18 @@ async function reloadPlugins() {
                                             else {
                                                 deploy_helpers.showErrorMessage(
                                                     i18.t('plugins.errors.notInitialized',
-                                                          PI.__file)
+                                                        PI.__file)
                                                 );
                                             }
                                         }
                                         catch (e) {
                                             deploy_helpers.showErrorMessage(
                                                 i18.t('plugins.errors.initializationFailed',
-                                                      JS)
+                                                    JS)
                                             );
 
                                             deploy_log.CONSOLE
-                                                      .trace(e, 'extension.reloadPlugins(2)');
+                                                .trace(e, 'extension.reloadPlugins(2)');
                                         }
                                     }
                                 }
@@ -360,46 +360,46 @@ async function reloadPlugins() {
                             else {
                                 deploy_helpers.showWarningMessage(
                                     i18.t('plugins.errors.noFactoryFunction',
-                                          JS)
+                                        JS)
                                 );
                             }
                         }
                         else {
                             deploy_helpers.showWarningMessage(
                                 i18.t('plugins.errors.noModule',
-                                      JS)
+                                    JS)
                             );
                         }
                     }
                     catch (e) {
                         deploy_helpers.showErrorMessage(
                             i18.t('plugins.errors.loadingFailed',
-                                  JS)
+                                JS)
                         );
 
                         deploy_log.CONSOLE
-                                  .trace(e, 'extension.reloadPlugins(1)');
+                            .trace(e, 'extension.reloadPlugins(1)');
                     }
                 }
             }
             else {
                 deploy_helpers.showErrorMessage(
                     i18.t('plugins.errors.noneFoundIn',
-                          PLUGIN_DIR)
+                        PLUGIN_DIR)
                 );
             }
         }
         else {
             deploy_helpers.showErrorMessage(
                 i18.t('isNo.dir',
-                      PLUGIN_DIR)
+                    PLUGIN_DIR)
             );
         }
     }
     else {
         deploy_helpers.showErrorMessage(
             i18.t('notFound.dir',
-                  PLUGIN_DIR)
+                PLUGIN_DIR)
         );
     }
 }
@@ -408,11 +408,11 @@ async function updateActiveWorkspaces() {
     try {
         deploy_helpers.asArray(activeWorkspaces).forEach((ws) => {
             ws.reloadEnvVars();
-        });    
+        });
     }
     catch (e) {
         deploy_log.CONSOLE
-                  .trace(e, 'extension.updateActiveWorkspaces()');
+            .trace(e, 'extension.updateActiveWorkspaces()');
     }
 
     await updateWorkspaceButton();
@@ -442,7 +442,7 @@ async function updateWorkspaceButton() {
             text += `(${i18.t('workspaces.noSelected')})`;
         }
         else {
-            text += Enumerable.from( ACTIVE_WORKSPACES ).select(ws => {
+            text += Enumerable.from(ACTIVE_WORKSPACES).select(ws => {
                 return ws.name;
             }).joinToString(', ');
         }
@@ -466,7 +466,7 @@ async function updateWorkspaceButton() {
     }
     catch (e) {
         deploy_log.CONSOLE
-                  .trace(e, 'extension.updateWorkspaceButton()');
+            .trace(e, 'extension.updateWorkspaceButton()');
     }
 }
 
@@ -480,16 +480,16 @@ export async function activate(context: vscode.ExtensionContext) {
     });
 
     WF.next(async () => {
-        const VS_DEPLOY = Enumerable.from(
+        const VS_DEPLOY: vscode.Extension<any> | null = Enumerable.from(
             vscode.extensions.all
-        ).firstOrDefault(x => 'mkloubert.vs-deploy' === x.id);
+        ).firstOrDefault(x => 'mkloubert.vs-deploy' === x.id, null);
 
         let doActivateTheExtension = true;
 
-        if (!deploy_helpers.isSymbol(VS_DEPLOY)) {
+        if (!deploy_helpers.isNullOrUndefined(VS_DEPLOY)) {
             if (VS_DEPLOY.isActive) {
                 doActivateTheExtension = false;
-                
+
                 const PRESSED_BTN = await deploy_helpers.showWarningMessage<deploy_contracts.MessageItemWithValue<number>>(
                     i18.t('vs-deploy.currentlyActive'),
 
@@ -561,16 +561,16 @@ async function activateExtension(context: vscode.ExtensionContext) {
                 context,
                 async (ev, folder) => {
                     if (ev === deploy_helpers.WorkspaceWatcherEvent.Added) {
-                        if (folder && folder.uri && (['', 'file'].indexOf( deploy_helpers.normalizeString(folder.uri.scheme) ) > -1)) {
+                        if (folder && folder.uri && (['', 'file'].indexOf(deploy_helpers.normalizeString(folder.uri.scheme)) > -1)) {
                             // only if local URI
-                            return await createNewWorkspace( folder );
+                            return await createNewWorkspace(folder);
                         }
                     }
                 },
                 async (err, ev, folder, workspace) => {
                     if (err) {
                         deploy_log.CONSOLE
-                                  .trace(err, 'extension.activate.registerWorkspaceWatcher()');
+                            .trace(err, 'extension.activate.registerWorkspaceWatcher()');
 
                         return;
                     }
@@ -579,9 +579,9 @@ async function activateExtension(context: vscode.ExtensionContext) {
                         const NEW_ACTIVE_WORKSPACES = deploy_helpers.asArray(
                             activeWorkspaces
                         ).filter(aws => aws !== workspace);
-                        
+
                         if (NEW_ACTIVE_WORKSPACES.length < 1) {
-                            await refreshActiveWorkspaceList();                                
+                            await refreshActiveWorkspaceList();
                         }
                         else {
                             activeWorkspaces = NEW_ACTIVE_WORKSPACES;
@@ -609,7 +609,7 @@ async function activateExtension(context: vscode.ExtensionContext) {
         }
         catch (e) {
             deploy_log.CONSOLE
-                      .trace(e, 'extension.activate(extensions home folder)');
+                .trace(e, 'extension.activate(extensions home folder)');
         }
     });
 
@@ -619,7 +619,7 @@ async function activateExtension(context: vscode.ExtensionContext) {
             await deploy_log.cleanupLogFilesInHomeDirectory();
         }
         catch (e) { /* ignore */ }
-    });    
+    });
 
     // package file
     WF.next(async () => {
@@ -628,7 +628,7 @@ async function activateExtension(context: vscode.ExtensionContext) {
         }
         catch (e) {
             deploy_log.CONSOLE
-                      .trace(e, 'extension.activate(package file)');
+                .trace(e, 'extension.activate(package file)');
         }
     });
 
@@ -651,7 +651,7 @@ async function activateExtension(context: vscode.ExtensionContext) {
         outputChannel.appendLine(i18.t('extension.initializing'));
         outputChannel.appendLine('');
         outputChannel.appendLine('');
-    });    
+    });
 
     // commands
     WF.next(() => {
@@ -680,8 +680,8 @@ async function activateExtension(context: vscode.ExtensionContext) {
                 }
                 catch (e) {
                     deploy_log.CONSOLE
-                              .trace(e, 'extension.deploy.reloaded.compare');
-                    
+                        .trace(e, 'extension.deploy.reloaded.compare');
+
                     deploy_helpers.showErrorMessage(
                         i18.t('compare.errors.operationFailed')
                     );
@@ -694,7 +694,7 @@ async function activateExtension(context: vscode.ExtensionContext) {
                     await deploy_commands.handleFilesAndFolders(
                         context,
                         fileOrFolder, allItems);
-                }),            
+                }),
 
             // list directory
             vscode.commands.registerCommand('extension.deploy.reloaded.listDirectory', async () => {
@@ -709,12 +709,12 @@ async function activateExtension(context: vscode.ExtensionContext) {
 
                     if (TARGET) {
                         await TARGET.__workspace
-                                    .listDirectory(TARGET);
+                            .listDirectory(TARGET);
                     }
                 }
                 catch (e) {
                     deploy_log.CONSOLE
-                              .trace(e, 'extension.deploy.reloaded.listDirectory');
+                        .trace(e, 'extension.deploy.reloaded.listDirectory');
 
                     deploy_helpers.showErrorMessage(
                         i18.t('listDirectory.errors.operationFailed')
@@ -729,7 +729,7 @@ async function activateExtension(context: vscode.ExtensionContext) {
                 }
                 catch (e) {
                     vscode.window.showErrorMessage(
-                        i18.t('apis.errors.failed', e)  
+                        i18.t('apis.errors.failed', e)
                     );
                 }
             }),
@@ -741,7 +741,7 @@ async function activateExtension(context: vscode.ExtensionContext) {
                 }
                 catch (e) {
                     vscode.window.showErrorMessage(
-                        i18.t('proxies.errors.failed', e)  
+                        i18.t('proxies.errors.failed', e)
                     );
                 }
             }),
@@ -757,7 +757,7 @@ async function activateExtension(context: vscode.ExtensionContext) {
                 }
                 catch (e) {
                     vscode.window.showErrorMessage(
-                        i18.t('tools.quickExecution.errors.failed', e)  
+                        i18.t('tools.quickExecution.errors.failed', e)
                     );
                 }
             }),
@@ -771,12 +771,12 @@ async function activateExtension(context: vscode.ExtensionContext) {
                     );
 
                     if (SELECTED_WORKSPACE) {
-                        activeWorkspaces = [ SELECTED_WORKSPACE ];
+                        activeWorkspaces = [SELECTED_WORKSPACE];
                     }
                 }
                 catch (e) {
                     deploy_log.CONSOLE
-                              .trace(e, 'extension.deploy.reloaded.selectWorkspace');
+                        .trace(e, 'extension.deploy.reloaded.selectWorkspace');
 
                     deploy_helpers.showErrorMessage(
                         i18.t('workspaces.active.errors.selectWorkspaceFailed'),
@@ -811,7 +811,7 @@ async function activateExtension(context: vscode.ExtensionContext) {
                 }
                 catch (e) {
                     deploy_log.CONSOLE
-                              .trace(e, 'extension.deploy.reloaded.switches');
+                        .trace(e, 'extension.deploy.reloaded.switches');
 
                     deploy_helpers.showErrorMessage(
                         i18.t('switches.errors.operationFailed')
@@ -930,8 +930,8 @@ async function activateExtension(context: vscode.ExtensionContext) {
                             (i) => {
                                 // remove icon
                                 return i.label
-                                        .substr(i.label.indexOf(' '))
-                                        .trim();
+                                    .substr(i.label.indexOf(' '))
+                                    .trim();
                             }
                         )
                     );
@@ -944,7 +944,7 @@ async function activateExtension(context: vscode.ExtensionContext) {
                 }
                 catch (e) {
                     deploy_log.CONSOLE
-                              .trace(e, 'extension.deploy.reloaded.showTools');
+                        .trace(e, 'extension.deploy.reloaded.showTools');
 
                     deploy_helpers.showErrorMessage(
                         i18.t('tools.errors.operationFailed')
@@ -973,7 +973,7 @@ async function activateExtension(context: vscode.ExtensionContext) {
         });
 
         deploy_log.CONSOLE
-                  .info(pluginInfo, 'extension.deploy.reloaded.loadPlugins');
+            .info(pluginInfo, 'extension.deploy.reloaded.loadPlugins');
     });
 
     // global VSCode events
@@ -983,7 +983,7 @@ async function activateExtension(context: vscode.ExtensionContext) {
                 onDidChangeActiveTextEditor(e).then(() => {
                 }).catch((err) => {
                     deploy_log.CONSOLE
-                              .trace(err, 'vscode.window.onDidChangeActiveTextEditor');
+                        .trace(err, 'vscode.window.onDidChangeActiveTextEditor');
                 });
             }),
 
@@ -1002,7 +1002,7 @@ async function activateExtension(context: vscode.ExtensionContext) {
                 onDidSaveTextDocument(e).then(() => {
                 }).catch((err) => {
                     deploy_log.CONSOLE
-                              .trace(err, 'vscode.workspace.onDidSaveTextDocument');
+                        .trace(err, 'vscode.workspace.onDidSaveTextDocument');
                 });
             }),
         );
@@ -1071,17 +1071,17 @@ async function activateExtension(context: vscode.ExtensionContext) {
         }
         catch (e) {
             deploy_log.CONSOLE
-                      .trace(e, 'extension.checkForNewVersion(1)');
+                .trace(e, 'extension.checkForNewVersion(1)');
         }
         finally {
             if (update) {
                 try {
                     context.globalState
-                           .update(STATE_KEY, CURRENT_VERSION);
+                        .update(STATE_KEY, CURRENT_VERSION);
                 }
                 catch (e) {
                     deploy_log.CONSOLE
-                              .trace(e, 'extension.checkForNewVersion(2)');
+                        .trace(e, 'extension.checkForNewVersion(2)');
                 }
             }
         }
@@ -1091,7 +1091,7 @@ async function activateExtension(context: vscode.ExtensionContext) {
     WF.next(() => {
         try {
             outputChannel.appendLine(i18.t('network.hostname',
-                                           OS.hostname()));
+                OS.hostname()));
 
             const NETWORK_INTERFACES = OS.networkInterfaces();
 
@@ -1103,13 +1103,13 @@ async function activateExtension(context: vscode.ExtensionContext) {
 
             if (Object.keys(NETWORK_INTERFACES).length > 0) {
                 outputChannel.appendLine(i18.t('network.interfaces.list'));
-                
+
                 for (const IFNAME of LIST_OF_IFNAMES) {
                     const IFACES = NETWORK_INTERFACES[IFNAME].filter(x => {
                         return !x.internal;
                     }).filter(x => {
                         let addr = deploy_helpers.normalizeString(x.address);
-                        
+
                         if ('IPv4' === x.family) {
                             return !/^(127\.[\d.]+|[0:]+1|localhost)$/.test(addr);
                         }
@@ -1128,8 +1128,8 @@ async function activateExtension(context: vscode.ExtensionContext) {
                     if (IFACES.length > 0) {
                         outputChannel.appendLine(`    - '${IFNAME}':`);
                         IFACES.forEach(x => {
-                                            outputChannel.appendLine(`      [${x.family}] '${x.address}' / '${x.netmask}' ('${x.mac}')`);
-                                       });
+                            outputChannel.appendLine(`      [${x.family}] '${x.address}' / '${x.netmask}' ('${x.mac}')`);
+                        });
 
                         outputChannel.appendLine('');
                     }
@@ -1141,7 +1141,7 @@ async function activateExtension(context: vscode.ExtensionContext) {
         }
         catch (e) {
             deploy_log.CONSOLE
-                      .trace(e, 'extension.displayNetworkInfo()');
+                .trace(e, 'extension.displayNetworkInfo()');
         }
     });
 
@@ -1166,11 +1166,11 @@ async function activateExtension(context: vscode.ExtensionContext) {
             ).then(() => {
             }, (err) => {
                 deploy_log.CONSOLE
-                          .trace(err, 'extension.notifications(2)');
+                    .trace(err, 'extension.notifications(2)');
             });
         } catch (e) {
             deploy_log.CONSOLE
-                      .trace(e, 'extension.notifications(1)');
+                .trace(e, 'extension.notifications(1)');
         }
     });
 
