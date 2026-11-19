@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as AWS from 'aws-sdk';
+
 import * as deploy_clients from '../clients';
 import * as deploy_files from '../files';
 import * as deploy_helpers from '../helpers';
@@ -104,17 +104,7 @@ interface SharedIniFileCredentialsOptions {
  */
 export const DEFAULT_ACL = 'public-read';
 
-const KNOWN_CREDENTIAL_CLASSES = {
-    'cognito': AWS.CognitoIdentityCredentials,
-    'ec2': AWS.ECSCredentials,
-    'ec2meta': AWS.EC2MetadataCredentials,
-    'environment': AWS.EnvironmentCredentials,
-    'file': AWS.FileSystemCredentials,
-    'saml': AWS.SAMLCredentials,
-    'shared': AWS.SharedIniFileCredentials,
-    'temp': AWS.TemporaryCredentials,
-    'web': AWS.WebIdentityCredentials,
-};
+
 
 
 /**
@@ -130,7 +120,19 @@ export class S3BucketClient extends deploy_clients.AsyncFileListBase {
         super();
     }
 
-    private async createInstance(): Promise<AWS.S3> {
+    private async createInstance(): Promise<any> {
+        const AWS = require('aws-sdk');
+        const KNOWN_CREDENTIAL_CLASSES = {
+            'cognito': AWS.CognitoIdentityCredentials,
+            'ec2': AWS.ECSCredentials,
+            'ec2meta': AWS.EC2MetadataCredentials,
+            'environment': AWS.EnvironmentCredentials,
+            'file': AWS.FileSystemCredentials,
+            'saml': AWS.SAMLCredentials,
+            'shared': AWS.SharedIniFileCredentials,
+            'temp': AWS.TemporaryCredentials,
+            'web': AWS.WebIdentityCredentials,
+        };
         const AWS_DIR = Path.resolve(
             Path.join(
                 OS.homedir(),
@@ -383,7 +385,7 @@ export class S3BucketClient extends deploy_clients.AsyncFileListBase {
         return new Promise<deploy_files.FileSystemInfo[]>(async (resolve, reject) => {
             const COMPLETED = deploy_helpers.createCompletedAction(resolve, reject);
 
-            const ALL_OBJS: AWS.S3.Object[] = [];
+            const ALL_OBJS: any[] = [];
             const ITEMS: deploy_files.FileSystemInfo[] = [];
             const ALL_LOADED = () => {
                 const DIRS_ALREADY_ADDED: { [ dir: string ]: deploy_files.DirectoryInfo } = {};
@@ -436,7 +438,7 @@ export class S3BucketClient extends deploy_clients.AsyncFileListBase {
                 COMPLETED(null, ITEMS);
             };
 
-            const HANDLE_RESULT = (result: AWS.S3.ListObjectsV2Output) => {
+            const HANDLE_RESULT = (result: any) => {
                 if (!result) {
                     return;
                 }
@@ -471,7 +473,7 @@ export class S3BucketClient extends deploy_clients.AsyncFileListBase {
                             currentContinuationToken = undefined;
                         }
 
-                        const PARAMS: AWS.S3.Types.ListObjectsV2Request = {
+                        const PARAMS: any = {
                             Bucket: undefined,
                             ContinuationToken: <any>currentContinuationToken,
                             Prefix: path,
@@ -545,7 +547,7 @@ export class S3BucketClient extends deploy_clients.AsyncFileListBase {
                     acl = undefined;
                 }
 
-                const PARAMS: AWS.S3.PutObjectRequest = {
+                const PARAMS: any = {
                     ACL: acl,
                     Bucket: undefined,
                     ContentType: contentType,

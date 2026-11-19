@@ -371,7 +371,7 @@ export async function reloadCommands(newCfg: deploy_contracts.Configuration) {
             if (!deploy_helpers.isNullOrUndefined(scriptCmd.button)) {
                 enableBtn = deploy_helpers.toBooleanSafe(scriptCmd.button.enabled, true);
 
-                if (enableBtn) {
+                if (enableBtn && deploy_workspaces.isToolbarFolder(ME.rootPath)) {
                     newCommandBtn = await deploy_helpers.createButton(scriptCmd.button, async (btn, opts) => {
                         const BTN_CMD = ID;
 

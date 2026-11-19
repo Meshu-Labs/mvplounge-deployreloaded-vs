@@ -105,7 +105,7 @@ export async function compile(compileOpts: CompileOptions) {
             const LESS_OUTPUT = await LESS.render(LESS_CODE, OPTS);
 
             await deploy_helpers.writeFile(OUTPUT_FILE,
-                                           new Buffer(LESS_OUTPUT.css, enc));
+                                           Buffer.from(LESS_OUTPUT.css, enc));
         }
         catch (e) {
             msg = {

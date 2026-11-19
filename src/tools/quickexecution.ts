@@ -1239,7 +1239,7 @@ function _27adf674_b653_4ee0_a33d_4f60be7859d2() {
     help += "```javascript\n";
     help += "$wf('./myFile1.txt', 'Test')\n";
     help += "$wf('./myFile2.txt', 'Täst', 'utf8')\n";
-    help += "$wf('./myFile3.txt', new Buffer('Test'))\n";
+    help += "$wf('./myFile3.txt', Buffer.from('Test'))\n";
     help += "```\n";
     help += "\n";
 

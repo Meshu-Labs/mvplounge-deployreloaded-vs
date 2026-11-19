@@ -97,28 +97,38 @@ function requestInner(url: string | URL.Url, opts: RequestOptions,
         }
 
         try {
-            // keep sure to have an URL.Url object
-            if (!deploy_helpers.isObject<URL.Url>(url)) {
-                url = deploy_helpers.toStringSafe(url);
-                if (deploy_helpers.isEmptyString(url)) {
-                    url = `http://${deploy_contracts.DEFAULT_HOST}/`;
-                }
-
-                url = URL.parse(url);
+            let parsedUrl: any;
+            if (url instanceof globalThis.URL) {
+                parsedUrl = url;
+            }
+            else if (typeof url === 'string') {
+                const urlString = deploy_helpers.toStringSafe(url);
+                parsedUrl = new globalThis.URL(deploy_helpers.isEmptyString(urlString)
+                    ? `http://${deploy_contracts.DEFAULT_HOST}/`
+                    : urlString);
+            }
+            else {
+                const legacyUrl = url as unknown as URL.Url;
+                parsedUrl = new globalThis.URL(deploy_helpers.isEmptyString(legacyUrl.href)
+                    ? `http://${deploy_contracts.DEFAULT_HOST}/`
+                    : legacyUrl.href);
             }
 
-            const PROTOCOL = deploy_helpers.normalizeString(url.protocol);
+            const PROTOCOL = deploy_helpers.normalizeString(parsedUrl.protocol);
 
             const DEFAULT_OPTS: HTTP.RequestOptions = {
                 headers: {},
-                hostname: url.hostname,
+                hostname: parsedUrl.hostname,
                 method: 'GET',
-                path: url.path,
+                path: `${parsedUrl.pathname}${parsedUrl.search}`,
                 protocol: PROTOCOL,
             };
 
-            if (!deploy_helpers.isEmptyString(url.auth)) {
-                const AUTH = new Buffer(url.auth, 'ascii');
+            const auth = parsedUrl.username
+                ? `${parsedUrl.username}:${parsedUrl.password}`
+                : '';
+            if (!deploy_helpers.isEmptyString(auth)) {
+                const AUTH = Buffer.from(auth, 'ascii');
 
                 DEFAULT_OPTS.headers['Authorization'] = `Basic ${AUTH.toString('base64')}`;
             }
@@ -126,7 +136,7 @@ function requestInner(url: string | URL.Url, opts: RequestOptions,
             let factory: (options: HTTP.RequestOptions,
                           callback?: (res: HTTP.IncomingMessage) => void) => HTTP.ClientRequest;
 
-            let port = parseInt(deploy_helpers.toStringSafe(url.port).trim());
+            let port = parseInt(deploy_helpers.toStringSafe(parsedUrl.port).trim());
             if (PROTOCOL === 'https:') {
                 factory = HTTPs.request;
 
@@ -186,7 +196,7 @@ function requestInner(url: string | URL.Url, opts: RequestOptions,
                                             };
                                         }
 
-                                        requestInner(URL.parse(newLocation), MergeDeep(FINAL_REQUEST_OPTS, nextOpts || {}),
+                                        requestInner(new globalThis.URL(newLocation, parsedUrl.href), MergeDeep(FINAL_REQUEST_OPTS, nextOpts || {}),
                                                      redirections + 1).then((resp2) => {
                                             COMPLETED(null, resp2);
                                         }).catch((err) => {

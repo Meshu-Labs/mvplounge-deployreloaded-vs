@@ -104,7 +104,7 @@ export async function compile(compileOpts: CompileOptions) {
                                                          OPTS);
 
             await deploy_helpers.writeFile(OUTPUT_FILE,
-                                           new Buffer(JS_CODE, enc));
+                                           Buffer.from(JS_CODE, enc));
         }
         catch (e) {
             msg = {

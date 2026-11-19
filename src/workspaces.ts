@@ -3724,7 +3724,7 @@ export class Workspace extends deploy_helpers.WorkspaceBase implements deploy_co
                 continue;
             }
 
-            if (!deploy_helpers.toBooleanSafe(buttonDesc.enabled, true)) {
+            if (!isToolbarFolder(this.rootPath) || !deploy_helpers.toBooleanSafe(buttonDesc.enabled, true)) {
                 continue;
             }
 
@@ -5093,6 +5093,21 @@ export function setAllWorkspacesProvider(newProvider: WorkspaceProvider) {
  * @return {Promise<Workspace|false>} The promise that contains the selected workspace (if selected)
  *                                    or (false) if no package is available.
  */
+export function getToolbarFolder(rootPath?: string): string {
+    const resource = rootPath ? vscode.Uri.file(rootPath) : undefined;
+    return vscode.workspace.getConfiguration('deploy.reloaded', resource).get<string>('toolbarFolder', '').trim();
+}
+
+export function isToolbarFolder(rootPath: string): boolean {
+    const toolbarFolder = getToolbarFolder(rootPath);
+    if (!toolbarFolder) {
+        return true;
+    }
+
+    const folder = vscode.workspace.getWorkspaceFolder(vscode.Uri.file(rootPath));
+    return !!folder && folder.name === toolbarFolder;
+}
+
 export async function showWorkspaceQuickPick(context: vscode.ExtensionContext,
                                              workspaces: Workspace | Workspace[],
                                              opts?: vscode.QuickPickOptions): Promise<Workspace | false> {
@@ -5105,7 +5120,7 @@ export async function showWorkspaceQuickPick(context: vscode.ExtensionContext,
             description: '',
             detail: ws.rootPath,
             state: Crypto.createHash('sha256')
-                         .update( new Buffer(deploy_helpers.toStringSafe(ws.id), 'utf8') )
+                         .update( Buffer.from(deploy_helpers.toStringSafe(ws.id), 'utf8') )
                          .digest('hex'),
         };
     });

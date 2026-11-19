@@ -457,7 +457,7 @@ async function updateWorkspaceButton() {
         BTN.text = text;
         BTN.tooltip = tooltip;
 
-        if (ALL_WORKSPACES.length > 1 || ALWAYS_SHOW_BUTTON) {
+        if (!deploy_workspaces.getToolbarFolder() && (ALL_WORKSPACES.length > 1 || ALWAYS_SHOW_BUTTON)) {
             BTN.show();
         }
         else {

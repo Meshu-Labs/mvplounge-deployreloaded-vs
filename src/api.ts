@@ -373,7 +373,7 @@ export class ApiHost extends deploy_helpers.DisposableBase {
                 if (AUTHORIZATION.toLowerCase().startsWith('basic ')) {
                     try {
                         const USERNAME_AND_PASSWORD = (
-                            new Buffer(AUTHORIZATION.substr(6).trim(), 'base64')
+                            Buffer.from(AUTHORIZATION.substr(6).trim(), 'base64')
                         ).toString('utf8');
 
                         let username: string;
@@ -426,7 +426,7 @@ export class ApiHost extends deploy_helpers.DisposableBase {
             resp.setHeader('Content-type', 'application/json; charset=utf-8');
 
             return resp.status(500).send(
-                new Buffer(
+                Buffer.from(
                     JSON.stringify({
                         success: false,
                         code: -1,
@@ -694,7 +694,7 @@ export class ApiHost extends deploy_helpers.DisposableBase {
             resp.setHeader('Content-type', 'application/json; charset=utf-8');
 
             return resp.status(200).send(
-                new Buffer(
+                Buffer.from(
                     JSON.stringify({
                         success: true,
                         code: 0,
@@ -713,7 +713,7 @@ export class ApiHost extends deploy_helpers.DisposableBase {
             resp.setHeader('Content-type', 'application/json; charset=utf-8');
 
             return resp.status(200).send(
-                new Buffer(
+                Buffer.from(
                     JSON.stringify({
                         success: true,
                         code: 0,
@@ -733,7 +733,7 @@ export class ApiHost extends deploy_helpers.DisposableBase {
             const CMD = deploy_helpers.toStringSafe( req.params.command ).trim();
             if ('' === CMD) {
                 return resp.status(400).send(
-                    new Buffer(
+                    Buffer.from(
                         JSON.stringify({
                             success: false,
                             code: 1,
@@ -769,7 +769,7 @@ export class ApiHost extends deploy_helpers.DisposableBase {
             }
             catch (e) {
                 return resp.status(400).send(
-                    new Buffer(
+                    Buffer.from(
                         JSON.stringify({
                             success: false,
                             code: 2,
@@ -798,7 +798,7 @@ export class ApiHost extends deploy_helpers.DisposableBase {
             catch { }
 
             return resp.status(200).send(
-                new Buffer(
+                Buffer.from(
                     JSON.stringify({
                         success: false,
                         code: 0,
@@ -819,7 +819,7 @@ export class ApiHost extends deploy_helpers.DisposableBase {
                 resp.setHeader('Content-type', 'application/json; charset=utf-8');
 
                 return resp.status(200).send(
-                    new Buffer(
+                    Buffer.from(
                         JSON.stringify({
                             success: true,
                             code: 0,
@@ -852,7 +852,7 @@ export class ApiHost extends deploy_helpers.DisposableBase {
             resp.setHeader('Content-type', 'application/json; charset=utf-8');
 
             return resp.status(200).send(
-                new Buffer(
+                Buffer.from(
                     JSON.stringify({
                         success: true,
                         code: 0,
@@ -900,7 +900,7 @@ export class ApiHost extends deploy_helpers.DisposableBase {
             }
 
             return resp.status(200).send(
-                new Buffer(content, 'utf8')
+                Buffer.from(content, 'utf8')
             );
         });
 
@@ -935,7 +935,7 @@ export class ApiHost extends deploy_helpers.DisposableBase {
                 resp.setHeader('Content-type', 'application/json; charset=utf-8');
 
                 return resp.status(200).send(
-                    new Buffer(
+                    Buffer.from(
                         JSON.stringify({
                             success: true,
                             code: 0,
@@ -960,7 +960,7 @@ export class ApiHost extends deploy_helpers.DisposableBase {
                 resp.setHeader('Content-type', 'application/json; charset=utf-8');
 
                 return resp.status(200).send(
-                    new Buffer(
+                    Buffer.from(
                         JSON.stringify({
                             success: true,
                             code: 0,
@@ -982,7 +982,7 @@ export class ApiHost extends deploy_helpers.DisposableBase {
                 resp.setHeader('Content-type', 'application/json; charset=utf-8');
 
                 return resp.status(200).send(
-                    new Buffer(
+                    Buffer.from(
                         JSON.stringify({
                             success: true,
                             code: 0,
@@ -1049,7 +1049,7 @@ export class ApiHost extends deploy_helpers.DisposableBase {
             }
             catch (e) {
                 return resp.status(400).send(
-                    new Buffer(
+                    Buffer.from(
                         JSON.stringify({
                             success: false,
                             code: 1,
@@ -1066,7 +1066,7 @@ export class ApiHost extends deploy_helpers.DisposableBase {
 
             if (!doc || deploy_helpers.isEmptyString(doc.content)) {
                 return resp.status(400).send(
-                    new Buffer(
+                    Buffer.from(
                         JSON.stringify({
                             success: false,
                             code: 2,
@@ -1148,7 +1148,7 @@ export class ApiHost extends deploy_helpers.DisposableBase {
             }
             catch (e) {
                 return resp.status(400).send(
-                    new Buffer(
+                    Buffer.from(
                         JSON.stringify({
                             success: false,
                             code: 1,
@@ -1165,7 +1165,7 @@ export class ApiHost extends deploy_helpers.DisposableBase {
 
             if (!msg) {
                 return resp.status(400).send(
-                    new Buffer(
+                    Buffer.from(
                         JSON.stringify({
                             success: false,
                             code: 2,
@@ -1204,7 +1204,7 @@ export class ApiHost extends deploy_helpers.DisposableBase {
 
             if (!showPopup) {
                 return resp.status(400).send(
-                    new Buffer(
+                    Buffer.from(
                         JSON.stringify({
                             success: false,
                             code: 3,

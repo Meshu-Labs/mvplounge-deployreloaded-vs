@@ -88,7 +88,7 @@ export class DropBoxClient extends deploy_clients.AsyncFileListBase {
             path: path,
         });
 
-        return new Buffer(META_DATA.fileBinary, 'binary');
+        return Buffer.from(META_DATA.fileBinary, 'binary');
     }
 
     /** @inheritdoc */

@@ -114,7 +114,7 @@ export async function execute(context: deploy_targets.TargetOperationExecutionCo
         u = 'http://localhost/';
     }
 
-    const URL = Url.parse(u);
+    const URL = new globalThis.URL(u);
 
     const PROTOCOL = deploy_helpers.normalizeString(URL.protocol);
     switch (PROTOCOL) {
@@ -155,7 +155,7 @@ export async function execute(context: deploy_targets.TargetOperationExecutionCo
         // Basic Auth
 
         HEADERS['Authorization'] = 'Basic ' + 
-            (new Buffer(`${USERNAME}:${PASSWORD}`, 'ascii')).toString('base64');
+            (Buffer.from(`${USERNAME}:${PASSWORD}`, 'ascii')).toString('base64');
     }
 
     let method = deploy_helpers.toStringSafe(OPERATION.method).toUpperCase().trim();
@@ -169,11 +169,11 @@ export async function execute(context: deploy_targets.TargetOperationExecutionCo
 
         if (deploy_helpers.toBooleanSafe(OPERATION.isBodyBase64)) {
             if (!deploy_helpers.isEmptyString(strBody)) {
-                return new Buffer(strBody.trim(), 'base64');
+                return Buffer.from(strBody.trim(), 'base64');
             }
         }
         else {
-            return new Buffer(strBody, 'ascii');
+            return Buffer.from(strBody, 'ascii');
         }
     };
     if (deploy_helpers.toBooleanSafe(OPERATION.isBodyScript)) {

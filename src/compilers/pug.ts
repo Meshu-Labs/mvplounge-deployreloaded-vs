@@ -107,7 +107,7 @@ export async function compile(compileOpts: CompileOptions) {
                                     PUG_OPTS);
 
             await deploy_helpers.writeFile(OUTPUT_FILE,
-                                           new Buffer(HTML, enc));
+                                           Buffer.from(HTML, enc));
         }
         catch (e) {
             msg = {

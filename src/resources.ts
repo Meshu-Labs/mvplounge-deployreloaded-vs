@@ -56,7 +56,7 @@ export function replaceTemplateVars(src: any): string {
                         if ('' !== e) {
                             switch (e) {
                                 case 'base64':
-                                    strContent = (new Buffer(strContent, 'utf8')).toString('base64');
+                                    strContent = (Buffer.from(strContent, 'utf8')).toString('base64');
                                     break;
 
                                 case 'json':

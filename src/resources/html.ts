@@ -27,11 +27,11 @@ import * as ZLib from 'zlib';
 
 const REPOSITORY = {
     // START: footer.html
-    "footer.html": new Buffer("H4sIAAAAAAAAClNQUFDg5VKAApvi5KLMghKFksqCVFulktSKEv2sxLJEiKiSHS8XL5e+lkJYsLO/i6uui2uAj3+kbpCrj7+ji6uLQnFRsq0SQrk+hNLLKlZS0NIHaYXbApWygwjZ6Cflp1QCOTb6GSW5OXYAfyZrJ5MAAAA=", 'base64'),
+    "footer.html": Buffer.from("H4sIAAAAAAAAClNQUFDg5VKAApvi5KLMghKFksqCVFulktSKEv2sxLJEiKiSHS8XL5e+lkJYsLO/i6uui2uAj3+kbpCrj7+ji6uLQnFRsq0SQrk+hNLLKlZS0NIHaYXbApWygwjZ6Cflp1QCOTb6GSW5OXYAfyZrJ5MAAAA=", 'base64'),
     // END: footer.html
 
     // START: header.html
-    "header.html": new Buffer("H4sIAAAAAAAACsVTbWvbMBD+Pth/UA3DchrJaQih0KQQYg8GgXR9g34qiqzW8mTJky5hZuS/T7bTNR0dy6BQgznf+e557rmTJkfJcn59d5GiHEp1/vHDZGeRfya5YNnuu/VLAQzxnFknYBrcXH8mp4H/v5fhoFYCQV2JaQDiB8TcuS4l7qHbq/kySUmSXiyWd+QyXSxnSZogZ/k08HlxrqhlUjnOHDjaVKJe/AI+bvHfkLItPpyKW1nBPlfBNqyLdpQPa81BGo02jmf2fjUeJYKbTNxo2RjswEboZwdpBaytRlmXcPllbsrKaKEBz6xlNa2sAdNw0ZJVlDOlMAOzajH66IkJ89+Ae6DhpxAdIxwOBo3ltFna3NPMAA8iCuYKrNSP+GQcRdQpyQUmw6hD2Ua0MFLjMIx8ZPvHUFqtL6dyRAjK5WOu/Au0cIiQ8/8amtgwhbuKv4ztH5t8BoyfG6kY/+a7CdCDsSXz53XFnBiP+oUzutm2FxedHaau+LoWtn5XXcX3pgUypEM6oqXUByhreF9V17m7y71zVyarvfcLA0j+EBAEAAA=", 'base64'),
+    "header.html": Buffer.from("H4sIAAAAAAAACsVTbWvbMBD+Pth/UA3DchrJaQih0KQQYg8GgXR9g34qiqzW8mTJky5hZuS/T7bTNR0dy6BQgznf+e557rmTJkfJcn59d5GiHEp1/vHDZGeRfya5YNnuu/VLAQzxnFknYBrcXH8mp4H/v5fhoFYCQV2JaQDiB8TcuS4l7qHbq/kySUmSXiyWd+QyXSxnSZogZ/k08HlxrqhlUjnOHDjaVKJe/AI+bvHfkLItPpyKW1nBPlfBNqyLdpQPa81BGo02jmf2fjUeJYKbTNxo2RjswEboZwdpBaytRlmXcPllbsrKaKEBz6xlNa2sAdNw0ZJVlDOlMAOzajH66IkJ89+Ae6DhpxAdIxwOBo3ltFna3NPMAA8iCuYKrNSP+GQcRdQpyQUmw6hD2Ua0MFLjMIx8ZPvHUFqtL6dyRAjK5WOu/Au0cIiQ8/8amtgwhbuKv4ztH5t8BoyfG6kY/+a7CdCDsSXz53XFnBiP+oUzutm2FxedHaau+LoWtn5XXcX3pgUypEM6oqXUByhreF9V17m7y71zVyarvfcLA0j+EBAEAAA=", 'base64'),
     // END: header.html
 
 };

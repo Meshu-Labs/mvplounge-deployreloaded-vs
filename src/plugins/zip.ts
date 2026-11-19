@@ -95,7 +95,7 @@ class ZipPlugin extends deploy_plugins.PluginBase<ZipTarget> {
             }
         }
 
-        const ZIPPED_DATA = new Buffer(ZIP_FILE.generate({
+        const ZIPPED_DATA = Buffer.from(ZIP_FILE.generate({
             base64: false,
             comment: deploy_contracts.ZIP_COMMENT,
             compression: 'DEFLATE',
@@ -538,7 +538,7 @@ class ZipPlugin extends deploy_plugins.PluginBase<ZipTarget> {
             }
         }
 
-        const ZIPPED_DATA = new Buffer(ZIPFile.generate({
+        const ZIPPED_DATA = Buffer.from(ZIPFile.generate({
             base64: false,
             comment: deploy_contracts.ZIP_COMMENT,
             compression: 'DEFLATE',

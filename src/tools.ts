@@ -274,7 +274,7 @@ async function pullFiles(args) {
 `;
 
     await deploy_helpers.writeFile(scriptFile,
-                                   new Buffer(scriptContent, 'utf8'));
+                                   Buffer.from(scriptContent, 'utf8'));
 
     try {
         const ASK_IF_WRITE_TO_SETTINGS_ITEMS: deploy_contracts.MessageItemWithValue[] = [
@@ -380,7 +380,7 @@ async function pullFiles(args) {
 
                     await deploy_helpers.writeFile(
                         SETTINGS_FILE,
-                        new Buffer( JSON.stringify(settings, null, 4) )
+                        Buffer.from( JSON.stringify(settings, null, 4) )
                     );
                 }
             }
@@ -557,7 +557,7 @@ exports.execute = async function(args) {
 `;
 
     await deploy_helpers.writeFile(scriptFile,
-                                   new Buffer(scriptContent, 'utf8'));
+                                   Buffer.from(scriptContent, 'utf8'));
 
     const WORKSPACE_TARGETS = selectedWorkspace.getTargets();
     if (WORKSPACE_TARGETS.length > 0) {
@@ -673,7 +673,7 @@ exports.execute = async function(args) {
 
                         await deploy_helpers.writeFile(
                             SETTINGS_FILE,
-                            new Buffer( JSON.stringify(settings, null, 4) )
+                            Buffer.from( JSON.stringify(settings, null, 4) )
                         );
                     }
                 }

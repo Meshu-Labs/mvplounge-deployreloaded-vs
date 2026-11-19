@@ -170,7 +170,7 @@ export async function download(url: string | URL.Url, scopes?: string | string[]
             urlString = 'http://localhost';
         }
 
-        url = URL.parse(urlString);
+        url = new globalThis.URL(urlString) as unknown as URL.Url;
     }
     outVal.url = url;
     outVal.fullPath = url.href;

@@ -874,7 +874,7 @@ export function getTargetIdHash(target: Target): string {
     }
 
     return Crypto.createHash('sha256')
-                 .update( new Buffer(deploy_helpers.toStringSafe(target.__id), 'utf8') )
+                 .update( Buffer.from(deploy_helpers.toStringSafe(target.__id), 'utf8') )
                  .digest('hex');
 }
 

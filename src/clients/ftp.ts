@@ -871,7 +871,7 @@ class FtpClient extends FTPClientBase {
                         }
                         else {
                             COMPLETED(null,
-                                      new Buffer(`${respCode} ${deploy_helpers.toStringSafe(respTxt)}`, 'ascii'));
+                                      Buffer.from(`${respCode} ${deploy_helpers.toStringSafe(respTxt)}`, 'ascii'));
                         }
                     }
                 ];
@@ -1259,7 +1259,7 @@ class JsFTPClient extends FTPClientBase {
                     }
                     else {
                         COMPLETED(null,
-                                  _.isNil(result.text) ? result.text : new Buffer(result.text, 'ascii'));
+                                  _.isNil(result.text) ? result.text : Buffer.from(result.text, 'ascii'));
                     }
                 });
             }

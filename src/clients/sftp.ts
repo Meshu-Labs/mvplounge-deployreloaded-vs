@@ -550,7 +550,7 @@ export class SFTPClient extends deploy_clients.AsyncFileListBase {
 
                                     try {
                                         if (!Buffer.isBuffer(chunk)) {
-                                            chunk = new Buffer(deploy_helpers.toStringSafe(chunk), enc);
+                                            chunk = Buffer.from(deploy_helpers.toStringSafe(chunk), enc);
                                         }
 
                                         output = Buffer.concat([ output, chunk ]);

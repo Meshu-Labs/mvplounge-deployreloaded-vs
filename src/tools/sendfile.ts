@@ -161,7 +161,7 @@ export async function receiveFile(context: vscode.ExtensionContext) {
                             try {
                                 await deploy_helpers.writeFile(
                                     tmpFile,
-                                    new Buffer(
+                                    Buffer.from(
                                         deploy_helpers.toStringSafe(file.content),
                                         'utf8'
                                     )

@@ -159,7 +159,7 @@ class MailPlugin extends deploy_plugins.PluginBase<MailTarget> {
             };
         }
 
-        const ZIPPED_DATA = new Buffer(ZIPFile.generate({
+        const ZIPPED_DATA = Buffer.from(ZIPFile.generate({
             base64: false,
             comment: deploy_contracts.ZIP_COMMENT,
             compression: 'DEFLATE',

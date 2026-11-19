@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as AzureStorage from 'azure-storage';
+
 import * as Crypto from 'crypto';
 import * as deploy_clients from '../clients';
 import * as deploy_files from '../files';
@@ -82,7 +82,8 @@ export class AzureBlobClient extends deploy_clients.AsyncFileListBase {
         return normalizedContainer;
     }
 
-    private createInstance(): AzureStorage.BlobService {
+    private createInstance(): any {
+        const AzureStorage = require('azure-storage');
         if (deploy_helpers.toBooleanSafe(this.options.useDevelopmentStorage)) {
             return AzureStorage.createBlobService('UseDevelopmentStorage=true');
         }
@@ -188,7 +189,7 @@ export class AzureBlobClient extends deploy_clients.AsyncFileListBase {
         return new Promise<deploy_files.FileSystemInfo[]>((resolve, reject) => {
             const COMPLETED = deploy_helpers.createCompletedAction(resolve, reject);
 
-            const ALL_RESULTS: AzureStorage.BlobService.BlobResult[] = [];
+            const ALL_RESULTS: any[] = [];
             const ITEMS: deploy_files.FileSystemInfo[] = [];
             const ALL_LOADED = () => {
                 const DIRS_ALREADY_ADDED: { [ dir: string ]: deploy_files.DirectoryInfo } = {};
@@ -241,7 +242,7 @@ export class AzureBlobClient extends deploy_clients.AsyncFileListBase {
                 COMPLETED(null, ITEMS);
             };
 
-            const HANDLE_RESULT = (result: AzureStorage.BlobService.ListBlobsResult) => {
+            const HANDLE_RESULT = (result: any) => {
                 if (!result) {
                     return;
                 }
@@ -261,7 +262,7 @@ export class AzureBlobClient extends deploy_clients.AsyncFileListBase {
             try {
                 const SERVICE = ME.createInstance();
 
-                let currentContinuationToken: AzureStorage.common.ContinuationToken | false = false;
+                let currentContinuationToken: any | false = false;
 
                 let nextSegment: () => void;
                 nextSegment = () => {
@@ -278,7 +279,7 @@ export class AzureBlobClient extends deploy_clients.AsyncFileListBase {
 
                         SERVICE.listBlobsSegmented(
                             ME.container,
-                            <AzureStorage.common.ContinuationToken>currentContinuationToken,
+                            currentContinuationToken,
                             (err, result) => {
                                 if (err) {
                                     COMPLETED(err);

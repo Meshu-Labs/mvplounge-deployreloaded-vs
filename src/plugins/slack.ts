@@ -154,7 +154,7 @@ class SlackPlugin extends deploy_plugins.PluginBase<SlackTarget> {
                         });
                     }
 
-                    const ZIPPED_DATA = new Buffer(ZIPFile.generate({
+                    const ZIPPED_DATA = Buffer.from(ZIPFile.generate({
                         base64: false,
                         comment: deploy_contracts.ZIP_COMMENT,
                         compression: 'DEFLATE',

@@ -121,7 +121,7 @@ export async function compile(compileOpts: CompileOptions) {
                                                   OPTS);
 
             await deploy_helpers.writeFile(outputFile,
-                                           new Buffer(MINI_HTML, enc));
+                                           Buffer.from(MINI_HTML, enc));
 
             if (DELETE_SOURCES) {
                 try {

@@ -144,7 +144,7 @@ export async function compile(compileOpts: CompileOptions) {
                 const UGLY_CODE = deploy_helpers.toStringSafe(UGLY_RESULT.code);
                 
                 await deploy_helpers.writeFile(outputFile,
-                                               new Buffer(UGLY_CODE, enc));
+                                               Buffer.from(UGLY_CODE, enc));
 
                 if (DELETE_SOURCES) {
                     try {

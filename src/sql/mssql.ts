@@ -19,7 +19,7 @@ import * as deploy_contracts from '../contracts';
 import * as deploy_helpers from '../helpers';
 import * as deploy_sql from '../sql';
 import * as Moment from 'moment';
-import * as MSSQL from 'mssql';
+
 
 
 /**
@@ -72,9 +72,9 @@ export class MSSQLConnection extends deploy_helpers.DisposableBase implements de
     /**
      * Initializes a new instance of that class.
      * 
-     * @param {MSSQL.ConnectionPool} connection The underlying connection instance.
+     * @param {any} connection The underlying connection instance.
      */
-    constructor(public connection: MSSQL.ConnectionPool) {
+    constructor(public connection: any) {
         super();
     }
 
@@ -116,6 +116,7 @@ export class MSSQLConnection extends deploy_helpers.DisposableBase implements de
             const COMPLETED = deploy_helpers.createCompletedAction(resolve, reject);
 
             try {
+                const MSSQL = require('mssql');
                 const REQUEST = new MSSQL.Request(ME.connection);
                 deploy_helpers.asArray(args).forEach((a, i) => {
                     const PARAM_NAME = `Param_${i + 1}`;
@@ -232,7 +233,8 @@ export async function openMSSQLConnection(opts?: MSSQLOptions) {
                 db = undefined;
             }
 
-            const CONN_OPTS: MSSQL.config = {
+            const MSSQL = require('mssql');
+            const CONN_OPTS: any = {
                 database: db,
                 driver: driver,
                 server: host,

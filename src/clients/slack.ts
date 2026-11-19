@@ -23,7 +23,7 @@ import * as Enumerable from 'node-enumerable';
 import * as FS from 'fs';
 import * as Moment from 'moment';
 import * as Path from 'path';
-const Slack = require('@slack/client');
+import { WebClient } from '@slack/web-api';
 
 
 /**
@@ -99,7 +99,7 @@ export class SlackClient extends deploy_clients.AsyncFileListBase {
     }
 
     private createInstance() {
-        return new Slack.WebClient(
+        return new WebClient(
             deploy_helpers.toStringSafe(this.options.token).trim()
         );
     }
@@ -339,52 +339,41 @@ export class SlackClient extends deploy_clients.AsyncFileListBase {
 
                 let currentPage = 0;
 
-                let nextSegment: () => void;
-                nextSegment = () => {
+                const nextSegment = async () => {
                     try {
                         ++currentPage;
 
-                        CLIENT.files.list({
+                        const info: any = await CLIENT.files.list({
                             channel: CHANNEL,
                             page: currentPage,
-                        }, function(err, info) {
-                            if (err) {
-                                COMPLETED(err);
-                                return;
-                            }
-
-                            try {
-                                if (info.files) {
-                                    for (const FILE of info.files) {
-                                        if (FILE) {
-                                            ALL_FILES.push(FILE);
-                                        }
-                                    }
-                                }
-
-                                let isDone = true;
-                                if (info.paging) {
-                                    isDone = currentPage >= info.paging.pages;
-                                }
-
-                                if (isDone) {
-                                    DONE();
-                                }
-                                else {
-                                    nextSegment();
-                                }
-                            }
-                            catch (e) {
-                                COMPLETED(e);
-                            }
                         });
+
+                        if (info.files) {
+                            for (const FILE of info.files) {
+                                if (FILE) {
+                                    ALL_FILES.push(FILE);
+                                }
+                            }
+                        }
+
+                        let isDone = true;
+                        if (info.paging) {
+                            isDone = currentPage >= info.paging.pages;
+                        }
+
+                        if (isDone) {
+                            DONE();
+                        }
+                        else {
+                            await nextSegment();
+                        }
                     }
                     catch (e) {
                         COMPLETED(e);
                     }
                 };
 
-                nextSegment();
+                nextSegment().catch((e) => COMPLETED(e));
             }
             catch (e) {
                 COMPLETED(e);
@@ -430,10 +419,13 @@ export class SlackClient extends deploy_clients.AsyncFileListBase {
                                 file: FS.createReadStream(tempFile),
                                 filetype: 'auto',
                                 channels: CHANNEL,
+                                filename: FILENAME,
                                 title: FILENAME,
                             };
-                            
-                            CLIENT.files.upload(FILENAME, UPLOAD_OPTS, function(err) {
+
+                            Promise.resolve(CLIENT.files.upload(UPLOAD_OPTS)).then(() => {
+                                COMP(null);
+                            }).catch((err) => {
                                 COMP(err);
                             });
                         }

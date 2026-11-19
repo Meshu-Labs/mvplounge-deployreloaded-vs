@@ -1168,7 +1168,7 @@ export async function showPackageQuickPick(context: vscode.ExtensionContext,
             description: deploy_helpers.toStringSafe(pkg.description),
             detail: WORKSPACE.rootPath,
             state: Crypto.createHash('sha256')
-                         .update( new Buffer(deploy_helpers.toStringSafe(pkg.__id), 'utf8') )
+                         .update( Buffer.from(deploy_helpers.toStringSafe(pkg.__id), 'utf8') )
                          .digest('hex'),
         };
     });
