@@ -5093,13 +5093,12 @@ export function setAllWorkspacesProvider(newProvider: WorkspaceProvider) {
  * @return {Promise<Workspace|false>} The promise that contains the selected workspace (if selected)
  *                                    or (false) if no package is available.
  */
-export function getToolbarFolder(rootPath?: string): string {
-    const resource = rootPath ? vscode.Uri.file(rootPath) : undefined;
-    return vscode.workspace.getConfiguration('deploy.reloaded', resource).get<string>('toolbarFolder', '').trim();
+export function getToolbarFolder(): string {
+    return vscode.workspace.getConfiguration('deploy.reloaded').get<string>('toolbarFolder', '').trim();
 }
 
 export function isToolbarFolder(rootPath: string): boolean {
-    const toolbarFolder = getToolbarFolder(rootPath);
+    const toolbarFolder = getToolbarFolder();
     if (!toolbarFolder) {
         return true;
     }

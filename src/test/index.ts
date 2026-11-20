@@ -1,39 +1,38 @@
 /**
  * This file is part of the vscode-deploy-reloaded distribution.
  * Copyright (c) Marcel Joachim Kloubert.
- * 
- * vscode-deploy-reloaded is free software: you can redistribute it and/or modify  
- * it under the terms of the GNU Lesser General Public License as   
+ *
+ * vscode-deploy-reloaded is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, version 3.
  *
- * vscode-deploy-reloaded is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ * vscode-deploy-reloaded is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-//
-// PLEASE DO NOT MODIFY / DELETE UNLESS YOU KNOW WHAT YOU ARE DOING
-//
-// This file is providing the test runner to use when running extension tests.
-// By default the test runner in use is Mocha based.
-//
-// You can provide your own test runner if you want to override it by exporting
-// a function run(testRoot: string, clb: (error:Error) => void) that the extension
-// host can call to run the tests. The test runner is expected to use console.log
-// to report the results back to the caller. When the tests are finished, return
-// a possible error to the callback or null if none.
+import * as Glob from 'glob';
+import * as Mocha from 'mocha';
+import * as Path from 'path';
 
-import * as testRunner from 'vscode/lib/testrunner';
+export function run(): Promise<void> {
+    const mocha = new Mocha({ ui: 'tdd' });
+    for (const file of Glob.sync('**/*.test.js', { cwd: __dirname })) {
+        mocha.addFile(Path.join(__dirname, file));
+    }
 
-// You can directly control Mocha options by uncommenting the following lines
-// See https://github.com/mochajs/mocha/wiki/Using-mocha-programmatically#set-options for more info
-testRunner.configure({
-    ui: 'tdd', 		// the TDD UI is being used in extension.test.ts (suite, test, etc.)
-    useColors: true // colored output from test results
-});
-
-module.exports = testRunner;
+    return new Promise<void>((resolve, reject) => {
+        mocha.run(failures => {
+            if (failures) {
+                reject(new Error(`${failures} test(s) failed.`));
+            }
+            else {
+                resolve();
+            }
+        });
+    });
+}
